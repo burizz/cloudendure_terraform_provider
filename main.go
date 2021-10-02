@@ -7,7 +7,6 @@ import (
 	"time"
 	"io/ioutil"
 	"bytes"
-	"log"
 )
 
 func main() {
@@ -21,16 +20,31 @@ func main() {
 
 	cookieList, authErr := authCloudEndure(client, cloudEndureApiURL)
 	if authErr != nil {
-		log.Fatal(authErr)
+		fmt.Printf("Authentication Error: %s", authErr)
 	}
 
-	getBluePrints(client, cookieList, cloudEndureApiURL, cloudEndureProjectId, cloudEndureBluePrintId)
+	bluePrintConfig, getBluePrintErr := getBluePrints(client, cookieList, cloudEndureApiURL, cloudEndureProjectId, cloudEndureBluePrintId)
+	if getBluePrintErr != nil {
+		fmt.Printf("Get BluePrint Error: %s", getBluePrintErr)
+	}
+
+	fmt.Println("")
+	fmt.Printf("HERE %s", bluePrintConfig)
+
+	//// Pass map to Terraform ResourceData schema
+	//if setResourceDataErr := terraformResourceData.Set("blueprint_config", bluePrintConfig); setResourceDataErr != nil {
+		//return diag.FromErr(setResourceDataErr)
+	//}
+
+	//// SetId sets the ID of the resource. If the value is blank, then the resource is destroyed.
+	//// always run
+	//terraformResourceData.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 }
 
 // Authenticate in Cloudendure - assign cookie and xsrf token to HTTP client
 func authCloudEndure(httpClient *http.Client, cloudEndureApiURL string) (cookieList []*http.Cookie, authErr error) {
 	// TODO: fix passing API Token from var
-	var requestBody = []byte(`{"userApiToken":""}`)
+	var requestBody = []byte(`{"userApiToken":"B212-1445-FBE4-525A-658D-0885-86FD-4510-8192-EDA1-CA50-7738-AAAB-6D5B-A502-1F07"}`)
 	fmt.Println("Authenticate into CloudEndure using API Key")
 
 	loginURL := fmt.Sprintf("%s/login", cloudEndureApiURL)
@@ -56,16 +70,20 @@ func authCloudEndure(httpClient *http.Client, cloudEndureApiURL string) (cookieL
 
 	fmt.Println("response Status:", response.Status)
     fmt.Println("response Headers:", response.Header)
-    responseBody, _ := ioutil.ReadAll(response.Body)
-    fmt.Println("response Body:", string(responseBody))
 
+	responseBody, readResponseBodyErr := ioutil.ReadAll(response.Body)
+	if readResponseBodyErr != nil {
+		fmt.Printf("Unable to read HTTP response body: %s", readResponseBodyErr)
+		return nil, readResponseBodyErr
+	}
+    fmt.Println("response Body:", string(responseBody))
 	fmt.Println("")
 
 	return response.Cookies(), nil
 }
 
 // Get Cloudendure Blueprint by ID
-func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndureApiURL string, cloudEndureProjectId string, cloudEndureBluePrintId string) error {
+func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndureApiURL string, cloudEndureProjectId string, cloudEndureBluePrintId string) (bluePrintConfig map[string]interface{}, getBluePrintErr error) {
 	requestURL := fmt.Sprintf("%s/%s/blueprints/%s", cloudEndureApiURL, cloudEndureProjectId, cloudEndureBluePrintId)
 
 	fmt.Printf("Get Cloudendure Blueprint with ID: [%s]\n", cloudEndureBluePrintId)
@@ -79,8 +97,8 @@ func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndu
 	//for i := range cookieList {
 		//request.AddCookie(cookieList[i])
 	//}
-	request.Header.Add("X-XSRF-TOKEN", "v3+advWcP7hISr+0l3+xUA==\\012")
-	request.Header.Add("Cookie", "XSRF-TOKEN=\"v3+advWcP7hISr+0l3+xUA==\\012\"; session=.eJxNkG1rgzAURv_KuJ-lpFEHCoWNUcq6GbC0FjtGiJraWJOUJLq-0P8-hTL27T6Hex8O9wasLHWnHO06UUF8g6cCYkiuVbOTOc7x3BFMZH5BiMg0_FzXAbkmjizSYLc-hkkzD_ImDeDuATsJS0_cUClU5zjEGCEPWmYdZaUTPadOyAFPn31_GqEoCibhMOHAg-FKCmuFVhbir4fDRmaH3etsNnQ_SOYvT9Vi84-k26ot1GpZKILy7dnC_dsDw1lFtWovtNW1UBDvWWu5B53lRrFRAQpthJ1c2FFI3b9IbZRQtXXMTEotwYOem9Fm2OzDIZ6t2VOnj1z9fahqEpNvVzjDJCX4sNz47yZZ_Fw__EOWrlH0Vo_m9199K3Jx.FDoV0g.BTB2IiqdfoBCwsjP5EgAjSwYPac")
+	request.Header.Add("X-XSRF-TOKEN", "UOBVSxjq2laFVyJ2b6J3DA==\\012")
+	request.Header.Add("Cookie", "XSRF-TOKEN=\"UOBVSxjq2laFVyJ2b6J3DA==\\012\"; session=.eJxNkFFrwjAUhf_KuM9FYm0VC8KGdGVuDXTTSh0jpG3sUptEkrRYxf9uBRl7vB_nHD7uBWhRqFZa0ra8hOACTzkEEJ_LeicyN3NDi10ssh4hLBL_Y115-BxbHCXebn3w4zr0sjrx4OoAPXJDjkwTwWVrGQQuQg401FhCC8s7RiwXAx5PJxMXzcdoOvJ8bzYbOzC0BDeGK2kg-H44bET6u3tZLIbtB0knq2MZbf6RZFs2ufxc5RKjbHsycP1xQDNaEiWbnjSq4hKCPW0Mc6A1TEt6V4BcaW5GPT1wobpnobTksjKW6lGhBDjQMX23GZKdP5wno_fEqgOTfx9KN_Nl2mCPyrDPo9colc17LN7crxqHyRrNl9Xd_HoDen5yfQ.FDpckg.5d9uRFZeyedweZ4sLaStBGaJmz4")
 
 	fmt.Println("request URL:", request.URL)
 	fmt.Println("request Method:", request.Method)
@@ -90,21 +108,27 @@ func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndu
 	response, sendRequestErr := httpClient.Do(request)
 	if sendRequestErr != nil {
 		fmt.Println(sendRequestErr)
-		return sendRequestErr
+		return nil, sendRequestErr
 	}
 	defer response.Body.Close()
 
 	fmt.Println("response Status:", response.Status)
     fmt.Println("response Headers:", response.Header)
-    responseBody, _ := ioutil.ReadAll(response.Body)
-    fmt.Println("response Body:", string(responseBody))
+
+	// Used for Debugging HTTP body contents
+	//responseBody, readResponseBodyErr := ioutil.ReadAll(response.Body)
+	//if readResponseBodyErr != nil {
+		//fmt.Printf("Unable to read HTTP response body: %s", readResponseBodyErr)
+		//return nil, readResponseBodyErr
+	//}
+    //fmt.Println("response Body:", string(responseBody))
 
 	// Parse JSON into map
-	items := make([]map[string]interface{}, 0)
-	jsonDecodeErr := json.NewDecoder(response.Body).Decode(&items)
+	jsonDecodeErr := json.NewDecoder(response.Body).Decode(&bluePrintConfig)
 	if jsonDecodeErr != nil {
 		fmt.Println(jsonDecodeErr)
-		return jsonDecodeErr
+		return nil, jsonDecodeErr
 	}
-	return nil
+
+	return bluePrintConfig, nil
 }
