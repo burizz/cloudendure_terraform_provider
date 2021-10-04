@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
-	"io/ioutil"
-	"bytes"
 )
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 
 	//// Pass map to Terraform ResourceData schema
 	//if setResourceDataErr := terraformResourceData.Set("blueprint_config", bluePrintConfig); setResourceDataErr != nil {
-		//return diag.FromErr(setResourceDataErr)
+	//return diag.FromErr(setResourceDataErr)
 	//}
 
 	//// SetId sets the ID of the resource. If the value is blank, then the resource is destroyed.
@@ -58,7 +58,7 @@ func authCloudEndure(httpClient *http.Client, cloudEndureApiURL string) (cookieL
 
 	fmt.Println("request URL:", request.URL)
 	fmt.Println("request Method:", request.Method)
-    fmt.Println("request Headers:", request.Header)
+	fmt.Println("request Headers:", request.Header)
 	fmt.Println("")
 
 	response, sendRequestErr := httpClient.Do(request)
@@ -69,14 +69,14 @@ func authCloudEndure(httpClient *http.Client, cloudEndureApiURL string) (cookieL
 	defer response.Body.Close()
 
 	fmt.Println("response Status:", response.Status)
-    fmt.Println("response Headers:", response.Header)
+	fmt.Println("response Headers:", response.Header)
 
 	responseBody, readResponseBodyErr := ioutil.ReadAll(response.Body)
 	if readResponseBodyErr != nil {
 		fmt.Printf("Unable to read HTTP response body: %s", readResponseBodyErr)
 		return nil, readResponseBodyErr
 	}
-    fmt.Println("response Body:", string(responseBody))
+	fmt.Println("response Body:", string(responseBody))
 	fmt.Println("")
 
 	return response.Cookies(), nil
@@ -95,14 +95,14 @@ func getBluePrint(httpClient *http.Client, cookieList []*http.Cookie, cloudEndur
 
 	// TODO: Taking cookie from authenticated session doesnt work for some reason
 	//for i := range cookieList {
-		//request.AddCookie(cookieList[i])
+	//request.AddCookie(cookieList[i])
 	//}
-	request.Header.Add("X-XSRF-TOKEN", "faM9oN50+uHrpDLUBeBrVg==\\012")
-	request.Header.Add("Cookie", "XSRF-TOKEN=\"faM9oN50+uHrpDLUBeBrVg==\\012\"; session=.eJxNkG1rwjAUhf_KuJ-L9H2zIEyGE8oaqailHSOkbazRJpEkLVbxv6-CjH28D-ccHu4NSFXJThjcdayG6AYvJUSQXOtjwXM3dxcGuYjng20jngZfm8ZH18SgZeoXm1OQHBd-fkx9uFtAzkzjM1WYM9EZCpFr2xa0RBtMKsN6ig3jI3ZCz3NfnbfAm4SOE7qhBWOLM62ZFBqi76fDlu8OxXw2G7efZOfF53q5_UfSrG5LsY5Lgew8u2i4_1igKKmxFO2AW9kwAdGetJpa0GmqBHkoQCkV05OBnBiX_TuXSjDRaEPUpJIcLOipetiMyT4Yz4tWe2zkiYq_DxX8E62y6Qpt5qreHoZqsU5227hNRZwVV3v60TzM77-E_XMA.FDtRrQ.uBQ0rx35ci9AQnXv5EEGz8T8rB4")
+	request.Header.Add("X-XSRF-TOKEN", "0uc71sHHiyUnwKpBERWSPw==")
+	request.Header.Add("Cookie", "Cookie_1=value; XSRF-TOKEN=\"0uc71sHHiyUnwKpBERWSPw==\\012\"; session=.eJxNkFFrwjAUhf_KuM9FYlvdLAgbwzlkBjq1UscIaRtr2iYpSdpppf99FYTt8X6cc_i4V6BpqhppSdPwDIIrPCQQwLrLioOI3dhdWOxiEV8QwiKcfGxzH3dri5ehf9iWk3Wx8OMi9KF3gNbckJppIrhsLIPARciBihpLaGp5y4jlYsDjqed5U4Sm7ujRGz-5MweGluDGcCUNBF93h52IToeX-XzYvpPIW9XZcvePhPusSuTnKpEYxfuzgf7bAc1oRpSsLqRSOZcQHGllmAONYVrSmwIkSnMzutCSC9U-C6Ull7mxVI9SJcCBlumbzZBsJ8N5NvpIrCqZ_PvQe1Tg7q3bLE41i6ImQ_YnLKNNNMZh1qHZa34z738BkWpzZg.FDyqPg.8WtHlqQjTJWDFiCkqbYVfVP7I_E")
 
 	fmt.Println("request URL:", request.URL)
 	fmt.Println("request Method:", request.Method)
-    fmt.Println("request Headers:", request.Header)
+	fmt.Println("request Headers:", request.Header)
 	fmt.Println("")
 
 	response, sendRequestErr := httpClient.Do(request)
@@ -113,15 +113,15 @@ func getBluePrint(httpClient *http.Client, cookieList []*http.Cookie, cloudEndur
 	defer response.Body.Close()
 
 	fmt.Println("response Status:", response.Status)
-    fmt.Println("response Headers:", response.Header)
+	fmt.Println("response Headers:", response.Header)
 
 	// Used for Debugging HTTP body contents
 	//responseBody, readResponseBodyErr := ioutil.ReadAll(response.Body)
 	//if readResponseBodyErr != nil {
-		//fmt.Printf("Unable to read HTTP response body: %s", readResponseBodyErr)
-		//return nil, readResponseBodyErr
+	//fmt.Printf("Unable to read HTTP response body: %s", readResponseBodyErr)
+	//return nil, readResponseBodyErr
 	//}
-    //fmt.Println("response Body:", string(responseBody))
+	//fmt.Println("response Body:", string(responseBody))
 
 	// Parse JSON into map
 	//items := make(map[string]interface{}, 0)
