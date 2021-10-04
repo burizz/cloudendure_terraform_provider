@@ -23,7 +23,7 @@ func main() {
 		fmt.Printf("Authentication Error: %s", authErr)
 	}
 
-	bluePrintConfig, getBluePrintErr := getBluePrints(client, cookieList, cloudEndureApiURL, cloudEndureProjectId, cloudEndureBluePrintId)
+	bluePrintConfig, getBluePrintErr := getBluePrint(client, cookieList, cloudEndureApiURL, cloudEndureProjectId, cloudEndureBluePrintId)
 	if getBluePrintErr != nil {
 		fmt.Printf("Get BluePrint Error: %s", getBluePrintErr)
 	}
@@ -83,7 +83,7 @@ func authCloudEndure(httpClient *http.Client, cloudEndureApiURL string) (cookieL
 }
 
 // Get Cloudendure Blueprint by ID
-func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndureApiURL string, cloudEndureProjectId string, cloudEndureBluePrintId string) (bluePrintConfig map[string]interface{}, getBluePrintErr error) {
+func getBluePrint(httpClient *http.Client, cookieList []*http.Cookie, cloudEndureApiURL string, cloudEndureProjectId string, cloudEndureBluePrintId string) (bluePrintConfig map[string]interface{}, getBluePrintErr error) {
 	requestURL := fmt.Sprintf("%s/%s/blueprints/%s", cloudEndureApiURL, cloudEndureProjectId, cloudEndureBluePrintId)
 
 	fmt.Printf("Get Cloudendure Blueprint with ID: [%s]\n", cloudEndureBluePrintId)
@@ -97,8 +97,8 @@ func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndu
 	//for i := range cookieList {
 		//request.AddCookie(cookieList[i])
 	//}
-	request.Header.Add("X-XSRF-TOKEN", "UOBVSxjq2laFVyJ2b6J3DA==\\012")
-	request.Header.Add("Cookie", "XSRF-TOKEN=\"UOBVSxjq2laFVyJ2b6J3DA==\\012\"; session=.eJxNkFFrwjAUhf_KuM9FYm0VC8KGdGVuDXTTSh0jpG3sUptEkrRYxf9uBRl7vB_nHD7uBWhRqFZa0ra8hOACTzkEEJ_LeicyN3NDi10ssh4hLBL_Y115-BxbHCXebn3w4zr0sjrx4OoAPXJDjkwTwWVrGQQuQg401FhCC8s7RiwXAx5PJxMXzcdoOvJ8bzYbOzC0BDeGK2kg-H44bET6u3tZLIbtB0knq2MZbf6RZFs2ufxc5RKjbHsycP1xQDNaEiWbnjSq4hKCPW0Mc6A1TEt6V4BcaW5GPT1wobpnobTksjKW6lGhBDjQMX23GZKdP5wno_fEqgOTfx9KN_Nl2mCPyrDPo9colc17LN7crxqHyRrNl9Xd_HoDen5yfQ.FDpckg.5d9uRFZeyedweZ4sLaStBGaJmz4")
+	request.Header.Add("X-XSRF-TOKEN", "faM9oN50+uHrpDLUBeBrVg==\\012")
+	request.Header.Add("Cookie", "XSRF-TOKEN=\"faM9oN50+uHrpDLUBeBrVg==\\012\"; session=.eJxNkG1rwjAUhf_KuJ-L9H2zIEyGE8oaqailHSOkbazRJpEkLVbxv6-CjH28D-ccHu4NSFXJThjcdayG6AYvJUSQXOtjwXM3dxcGuYjng20jngZfm8ZH18SgZeoXm1OQHBd-fkx9uFtAzkzjM1WYM9EZCpFr2xa0RBtMKsN6ig3jI3ZCz3NfnbfAm4SOE7qhBWOLM62ZFBqi76fDlu8OxXw2G7efZOfF53q5_UfSrG5LsY5Lgew8u2i4_1igKKmxFO2AW9kwAdGetJpa0GmqBHkoQCkV05OBnBiX_TuXSjDRaEPUpJIcLOipetiMyT4Yz4tWe2zkiYq_DxX8E62y6Qpt5qreHoZqsU5227hNRZwVV3v60TzM77-E_XMA.FDtRrQ.uBQ0rx35ci9AQnXv5EEGz8T8rB4")
 
 	fmt.Println("request URL:", request.URL)
 	fmt.Println("request Method:", request.Method)
@@ -124,11 +124,18 @@ func getBluePrints(httpClient *http.Client, cookieList []*http.Cookie, cloudEndu
     //fmt.Println("response Body:", string(responseBody))
 
 	// Parse JSON into map
+	//items := make(map[string]interface{}, 0)
+	//jsonDecodeErr := json.NewDecoder(response.Body).Decode(&bluePrintConfig)
 	jsonDecodeErr := json.NewDecoder(response.Body).Decode(&bluePrintConfig)
 	if jsonDecodeErr != nil {
 		fmt.Println(jsonDecodeErr)
 		return nil, jsonDecodeErr
 	}
 
+	//// Convert JSON to follow Terraform's expected structure
+	//var updatedItems []interface{}
+	//updatedItems = append(updatedItems, items)
+
 	return bluePrintConfig, nil
+	//return updatedItems, nil
 }
