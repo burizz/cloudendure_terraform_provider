@@ -1,6 +1,5 @@
 # Terraform Provider cloudendure
 
-Run the following command to build the provider
 
 ```shell
 export OS_ARCH="$(go env GOHOSTOS)_$(go env GOHOSTARCH)"
