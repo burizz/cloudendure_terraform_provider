@@ -28,10 +28,14 @@ Then, run the following command to initialize the workspace and apply the sample
 terraform init && terraform apply
 ```
 
-
+```
 TF_REATTACH_PROVIDERS='{"registry.terraform.io/hashicorp.com/edu/cloudendure":{"Protocol":"grpc","Pid":3382870,"Test":true,"Addr":{"Network":"unix","String":"/tmp/plugin713096927"}}}'
+```
 
+```
 dlv exec --headless ./terraform-provider-cloudendure -- --debug
+```
 
-
+```
 ps | grep cloudendure
+```
