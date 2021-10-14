@@ -18,8 +18,8 @@ func dataSourceBlueprint() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"blueprint_id": &schema.Schema{
 				Type:        schema.TypeString,
-				Required:    true,
 				Description: "string - Cloudendure Blueprint ID to search by",
+				Required:    true,
 			},
 			"machine_id": &schema.Schema{
 				Type:        schema.TypeString,
@@ -86,11 +86,12 @@ func dataSourceBlueprintRead(ctx context.Context, d *schema.ResourceData, meta i
 		return diag.FromErr(defineRequestErr)
 	}
 
-	// Init HTTP client
-	client := &http.Client{}
+	// TODO: http client was inited in provider - verify that htis actually works
+	//client := &http.Client{}
+	client := meta.(*http.Client)
 
-	req.Header.Add("X-XSRF-TOKEN", "Tn8cGhv3oCIDVBE17bMV4g==")
-	req.Header.Add("Cookie", "Cookie_1=value; XSRF-TOKEN=\"Tn8cGhv3oCIDVBE17bMV4g==\\012\"; session=.eJxNkG1rgzAUhf_KuJ-lRKtdFQoboyuUKTisRccI0aQuapKSROkL_e-zUMY-3odzDg_3CqSu1SAtHgZOIbrCUwURxBfalqLwCm9tEy8RxRmhRKTBR9b4ySW2ySb1y6wL4nbtF23qw80BcuQGH5nGgsvBMog8hBzoibGY1JaPDFsuJuwu5vPAXTyH7mwZhkvXc2BqCW4MV9JA9PVw2In8p3xdrabtB8nn2yPd7P6RdE_7Sn5uK5mgYn8ycPt2QDNCsZL9Gfeq4RKiA-kNc2AwTEtyV4BKaW5mZ9JxocYXobTksjGW6FmtBDgwMn23mZJjMJ0now_Yqo7Jvw_lG98vEFW0TcYU9eu8277HGeVZXqDygsK35m5--wWKiHKp.FD8Odw.5ZpzINgi0Puh7t3OSZErQb0EI0Y")
+	req.Header.Add("X-XSRF-TOKEN", "3kZPD1PXwmipfaJn1Wuljg==")
+	req.Header.Add("Cookie", "Cookie_1=value; XSRF-TOKEN=\"3kZPD1PXwmipfaJn1Wuljg==\\012\"; session=.eJxNkG1rgzAURv_KuJ-lWN_WCoWNUQvdKjhqnY4RoqY21iRdEp1t8b_PQmGD--U53PtwuFfARSFarlHb0hL8Kzzk4MPmUtYZS63UWurQCll6Ns2QRe7btnLCy0aHq8jJtkd3Uy-dtI4cGAzAJ6rQiUjEKG81Ad8yTQMarDTChaYdQZqyEU892_bm4zxOPG82m04NGK8YVYoKrsD_vDvEbHfInheLsftOdvb6VK7ifyRKyibn7-uch2aa9AqGLwMkwSUSvDmjRlSUg7_HjSIGtIpIjm8KkAtJ1eSMj5SJ7okJySmvlMZyUggGBnRE3mzGzc4dY6_kHmlxJPzvQ5bG8TLq4-Bg50nzk7HgNa-DjzLpv7OLOX-pbubDL6CUc4U.FEHBgQ.41V_rVmKg__CNId2VTkLyZAUgBs")
 
 	fmt.Println("request URL:", req.URL)
 	fmt.Println("request Method:", req.Method)

@@ -5,6 +5,6 @@ provider "hashicorp.com/edu/cloudendure" {
   version     = "0.1.0"
   constraints = "0.1.0"
   hashes = [
-    "h1:P+NcrRfHI3JDOI6NsmiBBNY6oTL+FY1KT/gUHRTdVzk=",
+    "h1:rB+YPGz2MehU8OagqB/w5+c8Ff+Sc2tyVzttst+ZLWQ=",
   ]
 }
