@@ -1,3 +1,5 @@
+this is no longer developed !
+
 # Terraform Provider cloudendure
 
 
